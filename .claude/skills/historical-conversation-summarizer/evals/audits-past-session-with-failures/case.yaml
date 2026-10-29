@@ -1,0 +1,10 @@
+schema_version: "1.1"
+name: audits-past-session-with-failures
+expected_outcome: |
+  The skill is run with --session pointing at fixture-session.jsonl (not the live session). The
+  resulting ledger lists "Create src/import/csv.ts" under completed_actions with a proof citing
+  the Write call, lists the finance email under out_of_scope_items or pending_follow_ups (never
+  completed_actions) with the sendmail "command not found" error as the reason, and lists the
+  failed test run as a pending follow-up. The executive summary says the email was not sent.
+context:
+  scaffold_script: place-files.sh

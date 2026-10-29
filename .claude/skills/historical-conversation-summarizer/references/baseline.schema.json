@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Baseline Comparator",
+  "description": "The in-scope boundary: every discrete request the user made, and the constraints the agent operated under. Written by the orchestrating session BEFORE the auditor runs, so the auditor can judge each request against a fixed list instead of re-reading the scope with hindsight.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["scope_source", "requests", "constraints"],
+  "properties": {
+    "scope_source": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Where the requests were lifted from (e.g. 'execution-artifact/scope.md turns 1-3')."
+    },
+    "requests": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Every discrete, checkable thing the user asked for, in the order asked. Split compound sentences; do not merge, rank or judge.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "request", "source_turn"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1, "description": "R1, R2, … stable ids the ledger can cite." },
+          "request": { "type": "string", "minLength": 1, "description": "The request, as close to the user's words as possible." },
+          "source_turn": { "type": "integer", "description": "The scope.md turn number it came from." },
+          "explicit_boundary": { "type": "string", "description": "Any limit the user set on it ('only under ./.claude', 'do not commit')." }
+        }
+      }
+    },
+    "constraints": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tools_available", "permission_mode"],
+      "description": "What the agent was allowed and able to do. Used to decide whether an unmet request is out-of-scope (could never be done here) or pending (could be done, was not).",
+      "properties": {
+        "tools_available": { "type": "array", "items": { "type": "string" }, "description": "Tool names the agent could call." },
+        "permission_mode": { "type": "string", "minLength": 1 },
+        "rules_in_effect": { "type": "array", "items": { "type": "string" }, "description": "Standing rules (CLAUDE.md, RULES/*.md) that forbid or shape actions — banned deps, no-scan dirs, commit policy." },
+        "environment": { "type": "array", "items": { "type": "string" }, "description": "Facts that bound what was possible: offline, no credentials, read-only mount, missing CLI." },
+        "notes": { "type": "string" }
+      }
+    }
+  }
+}

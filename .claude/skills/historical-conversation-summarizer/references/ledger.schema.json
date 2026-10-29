@@ -1,0 +1,83 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Execution Ledger",
+  "description": "The Structured Extraction Schema the execution-auditor agent must populate. Strict: no extra keys anywhere.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "executive_summary",
+    "completed_actions",
+    "out_of_scope_items",
+    "pending_follow_ups"
+  ],
+  "properties": {
+    "executive_summary": {
+      "type": "string",
+      "minLength": 1,
+      "description": "A concise, objective 1-2 sentence summary of what was actually achieved during the execution session."
+    },
+    "completed_actions": {
+      "type": "array",
+      "description": "Tasks that were successfully finished and validated.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["task", "artifact_proof"],
+        "properties": {
+          "task": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The specific action taken (e.g., 'Generated React component', 'Queried PostgreSQL database')."
+          },
+          "artifact_proof": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The explicit evidence of completion from the log (e.g., 'File saved to /src/components/Button.tsx', 'API returned 201 Created')."
+          }
+        }
+      }
+    },
+    "out_of_scope_items": {
+      "type": "array",
+      "description": "Requests made by the user that were not fulfilled due to constraints, irrelevance, or missing tools.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["requested_feature", "rejection_reason"],
+        "properties": {
+          "requested_feature": {
+            "type": "string",
+            "minLength": 1,
+            "description": "What the user asked for that was not done."
+          },
+          "rejection_reason": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Why it was not done (e.g., 'Requires write permissions to production DB', 'No email tool available')."
+          }
+        }
+      }
+    },
+    "pending_follow_ups": {
+      "type": "array",
+      "description": "Tasks that failed during execution or require human intervention/subsequent agent runs.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["action_needed", "blocker"],
+        "properties": {
+          "action_needed": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The specific next step required."
+          },
+          "blocker": {
+            "type": "string",
+            "minLength": 1,
+            "description": "What is preventing completion right now (e.g., 'Missing API key', 'Rate limit exceeded on GitHub API')."
+          }
+        }
+      }
+    }
+  }
+}

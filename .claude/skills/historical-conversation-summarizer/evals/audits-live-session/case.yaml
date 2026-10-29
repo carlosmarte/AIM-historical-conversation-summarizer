@@ -1,0 +1,9 @@
+schema_version: "1.1"
+name: audits-live-session
+expected_outcome: |
+  A new folder /Users/Shared/agents/historical/<timestamp>-<uuid>-api-rate-limiter/ exists
+  containing manifest.json, execution-artifact/{scope.md,transcript.md,execution-log.jsonl,stats.json},
+  baseline.json, ledger.json (valid against ledger.schema.json), SUMMARY.md and README.md.
+  The ledger was written by the execution-auditor subagent, not by the main session, and every
+  completed_actions row cites a log sequence number. The final reply gives the folder path, the
+  executive summary verbatim, the three counts, and the pending follow-ups.
